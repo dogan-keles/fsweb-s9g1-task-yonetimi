@@ -6,25 +6,42 @@ import TaskHookForm from "./TaskHookForm";
 import PeopleForm from "./PeopleForm";
 import { initialTasks, initialTeam } from "./data";
 import { useForm } from "react-hook-form";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const notifySuccess = (m) => toast.success(`${m} Başarıyla Eklendi!`);
+const notifyInfo = (m) => toast.info(`${m} Başarıyla Eklendi!`);
 
 function App() {
   const [tasks, setTasks] = useState(initialTasks);
   const [team, setTeam] = useState(initialTeam);
   const { register, handleSubmit } = useForm();
   function handleTaskSubmit(yeniTask) {
+    notifySuccess(yeniTask.title);
     setTasks([yeniTask, ...tasks]);
   }
 
   function handlePeopleSubmit(yeniKisi) {
+    notifySuccess(yeniKisi);
     setTeam([...team, yeniKisi]);
   }
 
   function handleComplete(id) {
-    console.log("tamamlama fonksiyonunu buraya yazın");
+    console.log("Tamamlandı", id);
+    const yeniTasks = tasks.map((t) => {
+      if (t.id === id) {
+        notifyInfo(t.title);
+        return { ...t, status: "yapıldı" };
+      } else {
+        return t;
+      }
+    });
+    setTasks(yeniTasks);
   }
 
   return (
     <div className="app">
+      <ToastContainer />
       <div className="formColumn">
         <div className="form-container">
           <h2>Yeni Task</h2>
